@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>图片轮播+导航按钮事件响应</title>
+    <style>
+        #ibanner {
+            position: relative;
+            width: 1202px;
+            height: 676px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        #ibanner_pic a {
+            position: absolute;
+        }
+
+        #ibanner_btn {
+            position: absolute;
+            z-index: 9;
+            right: 5px;
+            bottom: 5px;
+            font-width: 700;
+            font-family: Arial;
+        }
+
+        #ibanner_btn span {
+            display: block;
+            float: left;
+            margin-left: 5px;
+            padding: 0 5px;
+            background: #000000;
+            cursor: pointer;
+        }
+
+        #ibanner_btn .normal {
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            color: #999999;
+            border: 1px solid #999999;
+            margin-top: 4px;
+        }
+
+        #ibanner_btn .current {
+            height: 24px;
+            line-height: 24px;
+            font-size: 20px;
+            color: #FF5300;
+            border: 1px solid #FF5300;
+        }
+    </style>
+    <script>
+        //全局变量，记录当前图片索引值
+        var currentIndex = 0;
+        var timer;
+
+        window.onload = function () {
+            var bannerPic = document.getElementById("ibanner");
+            initBanner(bannerPic); //初始化banner
+            timer = setInterval(playBanner, 3000); //周期性执行函数
+        };
+
+
+        //生成导航栏按钮
+        function creatBtn() {
+            //获得图片数量
+            var picList = document.getElementsByTagName("a");
+            //获得ibanner_pic的div
+            var btnBox = document.getElementById("ibanner_btn");
+            //console.log("这是box的数量："+btnBox);
+            var spanContent = "";
+            for (var i = 0; i < picList.length; i++) {
+                spanContent += '<span class = "normal">' + (i + 1) + '</span>>';
+            }
+            btnBox.innerHTML = spanContent;
+            //将第一个span的class设置为current
+            btnBox.getElementsByTagName("span")[0].className = "current";
+
+        }
+
+
+        //初始化banner的函数
+        function initBanner(bannerPic) {
+            //首先找到所有图片链接
+            var picList = bannerPic.getElementsByTagName("a");
+            //将每个图片的z-index设置为1
+            resetPic(picList);
+            //将当前图片的z-index设置为2
+            picList[0].style.zIndex = 2;
+            //为banner添加鼠标进入事件
+            bannerPic.onmouseover = function () {
+                //暂停轮播（清除定时器）
+                if (timer) {
+                    clearInterval(timer);
+                }
+            };
+
+            //为banner添加鼠标移出事件
+            bannerPic.onmouseout = function () {
+                //继续,周期性执行
+                timer = setInterval(playBanner, 3000);
+            };
+
+            creatBtn(); //动态生成导航按钮
+
+            //找到当前按钮的索引值
+            function findCurrentNum(btn) {
+                var btnList = document.getElementsByTagName("span");
+                for (var a = 0; a < btnList.length; a++) {
+                    if (btnList[a] == btn) {
+                        return a;
+                    }
+                }
+
+            }
+
+            //为所有的导航栏按钮添加鼠标移入事件响应函数
+            var btnList = document.getElementsByTagName("span");
+            for (var i = 0; i < btnList.length; i++) {
+                //console.log("get1:" + i);
+                //console.log("get2 :" + nextNum);
+                btnList[i].onmouseover = function () {
+                    //首先找到当前图片的索引值
+                    var currentNum = findCurrentNum(this);
+                    //console.log("true or not:" + currentNum);
+                    // (this == btnList[currentNum]));
+                    //console.log("get3: "+currentNum);
+                    //将全部按钮元素的class值修改为“normal”
+                    for (var a = 0; a < btnList.length; a++) {
+                        btnList[a].className = "normal";
+                    }
+                    //将当前按钮元素的class值修改为“current”
+                    this.className = "current";
+                    //console.log("get4" + currentNum);
+                    //保存下一个图片的索引值
+                    var nextNum = (currentNum + 1 >= btnList.length) ? 0 : currentNum + 1;
+                    //改变显示的图片
+                    picList[nextNum].style.left = "1202px";
+                    resetPic(picList);
+                    picList[nextNum].style.zIndex = 2;
+                    this.style.zIndex = 3;
+                    animation(picList[nextNum], 0, 0, 10);
+                }
+            }
+        }
+
+        //重置所有图片的z-index
+        function resetPic(picList) {
+            for (var i = 0; i < picList.length; i++) {
+                picList[i].style.zIndex = 1;
+            }
+        }
+
+        //图片轮播函数
+        function playBanner() {
+            //首先找到所有图片
+            var picList = document.getElementById("ibanner_pic").getElementsByTagName("a");
+            //将下一个要显示的图片进行偏移
+            var nextNum = (currentIndex + 1 >= picList.length) ? 0 : (currentIndex + 1);
+            picList[nextNum].style.left = "1202px";
+            //设置各自的z-index值
+            resetPic(picList);
+            var btnList = document.getElementsByTagName("span");
+            for (var a = 0; a < picList.length; a++) {
+                btnList[a].className = "normal";
+            }
+            btnList[currentIndex].className = "current";
+            picList[currentIndex].style.zIndex = 2;
+            picList[nextNum].style.zIndex = 3;
+            //实现图片的平滑移动
+            animation(picList[nextNum], 0, 0, 10);
+            //当前焦点下移一位
+            currentIndex = nextNum;
+        }
+
+        //动画处理函数
+        function animation(elem, xfinal, yfinal, speed) {
+            var timer = setInterval(function () {
+                //首先获得图片当前位置
+                var xpos = parseInt(elem.style.left); //1202
+                var ypos = parseInt(elem.style.top); //676
+                //然后判断当前位置是否到达边界
+                if (xpos <= xfinal && ypos <= yfinal) {
+                    clearInterval(timer);
+                    return true;
+                }
+                //如果没有到达边界，位置减去一定长度
+                var xdist = Math.ceil((xpos - xfinal) / 10);
+                var ydist = Math.ceil((ypos - yfinal) / 10);
+                xpos = xpos - xdist;
+                ypos = ypos - ydist;
+                //将新的位置赋值给left样式属性
+                elem.style.left = xpos + "px";
+                elem.style.top = ypos + "px";
+            }, speed);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="ibanner">
+        <div id="ibanner_pic">
+            <a href="#"><img src="1.jpg"></a>
+            <a href="#"><img src="2.jpg"></a>
+            <a href="#"><img src="images/202307-15784861870c53.jpg"></a>
+            <a href="#"><img src="images/204221-1580474541f2d1.jpg"></a>
+            <a href="#"><img src="images/205524-1566651324f88b.jpg"></a>
+        </div>
+        <div id="ibanner_btn">
+            <!--
+        <span class="current">1</span>
+        <span class="normal">2</span>
+        <span class="normal">3</span>
+        <span class="normal">4</span>
+        <span class="normal">5</span>
+        !-->
+        </div>
+    </div>
+</body>
+
+</html>

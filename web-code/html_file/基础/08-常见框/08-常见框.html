@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <!-- 下拉框 -->
+    <!-- 
+        默认选中 selected
+     -->
+    <p>
+        下拉框
+        <select name="my_list" id="asdsda">
+            <option value="v1">选择1</option>
+            <option value="v2" selected>选择2</option>
+            <option value="v3">选择3</option>
+            <option value="v4">选择4</option>
+        </select>
+    </p>
+
+    <!-- 文本框 -->
+    <p>
+        反馈 <textarea name="textarea" cols="50" rows="10">
+            默认值
+        </textarea>
+    </p>
+
+    <form action="../01-第一个网页/01-第一个网页.html">
+        <!-- 文件域 -->
+        <p>
+            <input name="files" type="file">
+            <input type="submit" name="upload" value="上传">
+        </p>
+
+        <!-- file:///F:/file/web_file/Web_Code/web-code/html_file/%E5%9F%BA%E7%A1%80/01-%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%BD%91%E9%A1%B5/01-%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%BD%91%E9%A1%B5.html?files=1591949822770.jpg&upload=%E4%B8%8A%E4%BC%A0 -->
+
+
+
+        <!-- 邮件验证 -->
+        <p>邮箱:
+            <input name="email" type="email">
+        </p>
+
+        <!-- url -->
+        <p>URL:
+            <input type="url" name="url">
+        </p>
+
+        <!-- 数字验证 -->
+        <p>数字：
+            <input type="number" name="number" max="100" min="0" step="10">
+        </p>
+
+        <!-- 滑块 -->
+        <p>滑块:
+            <input type="range" name="range" min="0" max="100">
+        </p>
+
+        <!-- 搜索 -->
+        <p>搜索：
+            <input type="search" name="search">
+        </p>
+    </form>
+
+
+</body>
+
+</html>
